@@ -229,5 +229,6 @@ dmypy.json
 cython_debug/
 
 # Custom
+media/
 
 
