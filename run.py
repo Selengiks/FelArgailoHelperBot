@@ -1,12 +1,16 @@
 from aiogram import Dispatcher, executor, types
 from aiogram.utils.executor import start_webhook
 from loguru import logger
+from support import logger_conf
+
+DEBUG_LOGGING = True  # Enable\Disable logging of all messages
+logger_conf.start(DEBUG_LOGGING)
 
 import config as cfg
 from support.bots import dp, bot
 from support.middleware import LoguruMiddleware
-
-DEBUG_LOGGING = False  # Enable\Disable logging of all messages
+import plugins
+import utils
 
 if DEBUG_LOGGING:
     dp.middleware.setup(LoguruMiddleware())
@@ -24,6 +28,10 @@ async def errors(update: types.Update, error: Exception):
 
 async def on_startup(dsp: Dispatcher):
     bot_info = await dsp.bot.me
+
+    await plugins.initialize_plugins()
+    await utils.initialize_utils()
+
     logger.info(f"Bot {bot_info.full_name} [@{bot_info.username}] started!")
 
 

@@ -2,11 +2,8 @@ import os
 from dotenv import load_dotenv
 
 from loguru import logger
-from support import logger_conf
 
 load_dotenv()
-logger_conf.start()
-logger.debug("Bot connection establish")
 
 # Base telegram setting
 POLLING = os.getenv("POLLING")  # if True - polling mode, False - webhook mode
@@ -30,3 +27,5 @@ if not POLLING == "True":
     WEBAPP_PORT = os.getenv("WEBAPP_PORT", default=8000)
 
 ADMINS = ["290522978"]  # list of admins, who can administer bot
+
+logger.debug("Bot config applied")

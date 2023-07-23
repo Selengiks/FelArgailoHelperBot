@@ -2,9 +2,11 @@ from sys import stdout
 from loguru import logger
 
 
-def start():
+def start(debug: bool):
     logger.remove()
-    logger.add("logs/log_{time}.log", rotation="1 day")
+    logger.add(
+        "logs/log_{time}.log", rotation="1 day", level="DEBUG" if debug else "INFO"
+    )
 
     logger.add(
         stdout,
@@ -12,6 +14,7 @@ def start():
         format="<green>{time:DD.MM.YY H:mm:ss}</green> "
         "| <yellow><b>{level}</b></yellow> | <magenta>{file}</magenta> | <cyan>{"
         "message}</cyan>",
+        level="DEBUG" if debug else "INFO",
     )
 
-    logger.debug("Logger configs applied")
+    logger.debug("Logger configs updated")
