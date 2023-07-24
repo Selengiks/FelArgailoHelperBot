@@ -4,6 +4,7 @@ from loguru import logger
 from support import logger_conf
 
 DEBUG_LOGGING = True  # Enable\Disable logging of all messages
+DEBUG_ALL = False  # Enable\Disable logging all, include chat messages
 logger_conf.start(DEBUG_LOGGING)
 
 import config as cfg
@@ -12,7 +13,7 @@ from support.middleware import LoguruMiddleware
 import plugins
 import utils
 
-if DEBUG_LOGGING:
+if DEBUG_LOGGING and DEBUG_ALL:
     dp.middleware.setup(LoguruMiddleware())
 
 
