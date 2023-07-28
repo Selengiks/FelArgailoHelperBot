@@ -2,7 +2,8 @@ from sys import stdout
 from loguru import logger
 
 
-def start(debug: bool):
+async def start(debug: bool):
+    """Apply custom loguru settings"""
     logger.remove()
     logger.add(
         "logs/log_{time}.log", rotation="1 day", level="DEBUG" if debug else "INFO"

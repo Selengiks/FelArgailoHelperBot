@@ -228,8 +228,10 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Telethon sessions
+*.session
+
 # Custom
 media/
 *.cmd
-
-
+*test*

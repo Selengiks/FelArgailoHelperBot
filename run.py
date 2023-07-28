@@ -1,17 +1,16 @@
 from aiogram import Dispatcher, executor, types
 from aiogram.utils.executor import start_webhook
-from loguru import logger
-from support import logger_conf
-
-DEBUG_LOGGING = True  # Enable\Disable logging of all messages
-DEBUG_ALL = False  # Enable\Disable logging all, include chat messages
-logger_conf.start(DEBUG_LOGGING)
-
+import support.logger_conf
 import config as cfg
+from loguru import logger
 from support.bots import dp, bot
+from support.telebot import tbot
 from support.middleware import LoguruMiddleware
 import plugins
 import utils
+
+DEBUG_LOGGING = True  # Enable\Disable logging of all messages
+DEBUG_ALL = False  # Enable\Disable logging all, include chat messages
 
 if DEBUG_LOGGING and DEBUG_ALL:
     dp.middleware.setup(LoguruMiddleware())
@@ -28,12 +27,16 @@ async def errors(update: types.Update, error: Exception):
 
 
 async def on_startup(dsp: Dispatcher):
-    bot_info = await dsp.bot.me
-
+    logger.info("Is starting...")
+    await support.logger_conf.start(DEBUG_LOGGING)
     await plugins.initialize_plugins()
     await utils.initialize_utils()
 
+    bot_info = await dsp.bot.me
+    tbot_info = await tbot.get_me()
+
     logger.info(f"Bot {bot_info.full_name} [@{bot_info.username}] started!")
+    logger.info(f"Telethon session established for [@{tbot_info.username}]!")
 
 
 async def on_shutdown(dsp: Dispatcher):
@@ -50,6 +53,7 @@ async def on_shutdown(dsp: Dispatcher):
 
 
 if __name__ == "__main__":
+    tbot.start()
     if cfg.POLLING == "True":
         logger.info("Connection type - POLLING")
         executor.start_polling(

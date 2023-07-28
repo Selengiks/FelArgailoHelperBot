@@ -8,6 +8,9 @@ media_files = {}
 
 
 async def sync_media():
+    """Checks the media folder and all subfolders, and populates the dictionary
+    with the files and their path in the format media_files = {"folder_name": {"file_name": path_to_file}}
+    """
     while True:
         new_media_files = {}
         for root, dirs, files in os.walk(media_folder):
@@ -39,7 +42,7 @@ async def sync_media():
         if DEBUG_LOGGING:
             for k, v in media_files.items():
                 logger.debug(f"Files sync result:\nKey: {k}. Values: {v}")
-        await asyncio.sleep(60)
+        await asyncio.sleep(600)
 
 
 async def on_startup():
