@@ -68,6 +68,7 @@ async def post_new_follower_media():
     while gif == last_gif:
         gif = random.choice(gifs)
     last_gif = gif
+    await asyncio.sleep(10)
     await bot.send_animation(channel_id, open(gif, "rb"))
     logger.debug("post_new_follower_gif()")
 
