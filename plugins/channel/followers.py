@@ -14,11 +14,11 @@ async def get_latest_users():
     """Return dict with lists of joined and left users from Admin log (need Telethon)"""
     latest_join = [
         user.user.username
-        for user in (await tbot.get_admin_log(channel_id, join=True))[:15]
+        for user in (await tbot.get_admin_log(channel_id, join=True))[:10]
     ]
     latest_left = [
         user.user.username
-        for user in (await tbot.get_admin_log(channel_id, leave=True))[:15]
+        for user in (await tbot.get_admin_log(channel_id, leave=True))[:10]
     ]
     return {"joined": latest_join, "left": latest_left}
 
@@ -34,17 +34,18 @@ async def track_channel_member_count():
         latest_users = await get_latest_users()
         if member_count > previous_member_count:
             logger.debug(f"New subscriber. New subscribers count: {member_count}")
-            if not any(
-                user in latest_users["left"] for user in latest_users["joined"]
+            if (
+                latest_users["joined"][0] not in latest_users["left"]
             ):  # prevent spam by leave\join
                 await post_new_follower_media()
             else:
                 logger.debug(f"Spam attempt avoided for post_new_follower_media()")
+
             previous_member_count = member_count
         elif member_count < previous_member_count:
             logger.debug(f"Somebody left. New subscribers count: {member_count}")
-            if not any(
-                user in latest_users["joined"] for user in latest_users["left"]
+            if (
+                latest_users["left"][0] not in latest_users["joined"]
             ):  # prevent spam by leave\join
                 await post_leave_follower_media()
             else:
@@ -77,5 +78,6 @@ async def post_leave_follower_media():
 
 
 async def on_startup():
+    """Plugin allow you track subscribers count from channel and do different things, based on it"""
     asyncio.create_task(track_channel_member_count())
     logger.debug("followers.py loaded")

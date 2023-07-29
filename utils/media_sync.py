@@ -1,10 +1,18 @@
 import os
 import asyncio
+from support.bots import dp
 from loguru import logger
 from run import DEBUG_LOGGING
+from aiogram import md, types
 
 media_folder = "media"
 media_files = {}
+
+
+@dp.message_handler(is_admin=True, commands="media", commands_prefix="!")
+async def media_list(message: types.Message):
+    """Return media files list to chat"""
+    await message.answer(media_files)  # WIP
 
 
 async def sync_media():

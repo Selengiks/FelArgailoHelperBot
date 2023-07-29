@@ -7,6 +7,7 @@ from support.bots import dp, bot
 from support.telebot import tbot
 from support.middleware import LoguruMiddleware
 import plugins
+from utils import handler_filters
 import utils
 
 DEBUG_LOGGING = True  # Enable\Disable logging of all messages

@@ -229,7 +229,7 @@ dmypy.json
 cython_debug/
 
 # Telethon sessions
-*.session
+*.session*
 
 # Custom
 media/
