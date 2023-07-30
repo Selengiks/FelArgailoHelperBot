@@ -22,14 +22,14 @@ async def stealer(message: types.Message):
         if len(args) > 1:
             if args[1].startswith("#"):
                 tag = args[1]
-                caption = f"Вкрадено у {answer.from_user.username or answer.from_user.full_name}\n\n{tag}"
+                caption = f"Вкрадено у @{answer.from_user.username or answer.from_user.full_name}\n\n{tag}"
             else:
                 caption = " ".join(args[1:])
                 if args[-1].startswith("#"):
                     tag = args[-1]
                     caption = f"{caption[:-len(tag)]}\n\n{tag}"
         else:
-            caption = f"Вкрадено у {answer.from_user.username or answer.from_user.full_name}\n\n{tag}"
+            caption = f"Вкрадено у @{answer.from_user.username or answer.from_user.full_name}\n\n{tag}"
         try:
             await sender.send_data(
                 answer,
