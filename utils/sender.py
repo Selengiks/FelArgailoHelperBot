@@ -1,5 +1,4 @@
 import typing
-
 from aiogram import md, types
 
 
@@ -12,6 +11,7 @@ async def send_data(
     reply_markup: typing.Union[
         types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, None
     ] = None,
+    caption: str = None,
 ) -> types.Message:
     """Allow to send different types of media and make some additional configurations"""
     kwargs = {
@@ -30,7 +30,7 @@ async def send_data(
     elif message.audio:
         return await message.bot.send_audio(
             audio=message.audio.file_id,
-            caption=text,
+            caption=caption or text,
             title=message.audio.title,
             performer=message.audio.performer,
             duration=message.audio.duration,
@@ -38,22 +38,22 @@ async def send_data(
         )
     elif message.animation:
         return await message.bot.send_animation(
-            animation=message.animation.file_id, caption=text, **kwargs
+            animation=message.animation.file_id, caption=caption or text, **kwargs
         )
     elif message.document:
         return await message.bot.send_document(
-            document=message.document.file_id, caption=text, **kwargs
+            document=message.document.file_id, caption=caption or text, **kwargs
         )
     elif message.photo:
         return await message.bot.send_photo(
-            photo=message.photo[-1].file_id, caption=text, **kwargs
+            photo=message.photo[-1].file_id, caption=caption or text, **kwargs
         )
     elif message.sticker:
         kwargs.pop("parse_mode")
         return await message.bot.send_sticker(sticker=message.sticker.file_id, **kwargs)
     elif message.video:
         return await message.bot.send_video(
-            video=message.video.file_id, caption=text, **kwargs
+            video=message.video.file_id, caption=caption or text, **kwargs
         )
     elif message.video_note:
         kwargs.pop("parse_mode")
