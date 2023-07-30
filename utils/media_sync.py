@@ -1,9 +1,9 @@
 import os
 import asyncio
-from support.bots import dp
+from aiogram import types
 from loguru import logger
+from support.bots import dp
 from run import DEBUG_LOGGING
-from aiogram import md, types
 
 media_folder = "media"
 media_files = {}
@@ -12,11 +12,11 @@ media_files = {}
 @dp.message_handler(is_admin=True, commands="media", commands_prefix="!")
 async def media_list(message: types.Message):
     """Return media files list to chat"""
-    await message.answer(media_files)  # WIP
+    await message.answer(str(media_files))
 
 
 async def sync_media():
-    """Checks the media folder and all subfolders, and populates the dictionary
+    """Checks the media folder and all sub-folders, and populates the dictionary
     with the files and their path in the format media_files = {"folder_name": {"file_name": path_to_file}}
     """
     while True:
@@ -50,7 +50,7 @@ async def sync_media():
         if DEBUG_LOGGING:
             for k, v in media_files.items():
                 logger.debug(f"Files sync result:\nKey: {k}. Values: {v}")
-        await asyncio.sleep(600)
+        await asyncio.sleep(3600)  # Set update interval in seconds (3600 = 1 hour)
 
 
 async def on_startup():

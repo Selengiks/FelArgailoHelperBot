@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-from loguru import logger
 from telethon import TelegramClient
 
 load_dotenv()

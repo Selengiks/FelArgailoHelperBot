@@ -1,12 +1,15 @@
-from loguru import logger
+import os
 import asyncio
+import random
+from dotenv import load_dotenv
+from loguru import logger
 from support.bots import bot
 from support.telebot import tbot
 from utils.media_sync import media_files
-from plugins.channel.configs import followers_conf
-import random
 
-channel_id = followers_conf.CHANNEL_ID
+
+load_dotenv()
+channel_id = os.getenv("CHANNEL")
 last_gif = None
 
 
@@ -61,8 +64,7 @@ async def post_new_follower_media():
         file_path
         for folder in media_files.values()
         for file_path in folder.values()
-        if followers_conf.NF_FORMAT
-        in file_path  # to change naming for file, edit NF_FORMAT in followers_conf file
+        if "new_follower_" in file_path
     ]
     gif = random.choice(gifs)
     while gif == last_gif:
