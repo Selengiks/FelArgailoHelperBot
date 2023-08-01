@@ -1,16 +1,16 @@
-from aiogram import Dispatcher, executor, types
-from aiogram.utils.executor import start_webhook
 import support.logger_conf
 import config as cfg
+from aiogram import Dispatcher, executor, types
+from aiogram.utils.executor import start_webhook
 from loguru import logger
-from support.bots import dp, bot
-from support.telebot import tbot
-from support.middleware import LoguruMiddleware
+from support import dp, bot, tbot, LoguruMiddleware
 import plugins
 from utils import handler_filters
 import utils
 
-DEBUG_LOGGING = True  # Enable\Disable logging of all messages
+DEBUG_LOGGING = (
+    "DEBUG"  # [INFO, DEBUG, TRACE] https://loguru.readthedocs.io/en/stable/index.html
+)
 DEBUG_ALL = False  # Enable\Disable logging all, include chat messages
 
 if DEBUG_LOGGING and DEBUG_ALL:
@@ -46,7 +46,7 @@ async def on_shutdown(dsp: Dispatcher):
     # Remove webhook (not acceptable in some cases)
     await bot.delete_webhook()
 
-    # Close DB connection (if used)
+    # Close DB connection
     await dsp.storage.close()
     await dsp.storage.wait_closed()
 

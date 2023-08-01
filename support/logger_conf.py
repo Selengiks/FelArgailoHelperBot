@@ -2,12 +2,10 @@ from sys import stdout
 from loguru import logger
 
 
-async def start(debug: bool):
+async def start(mode: str):
     """Apply custom loguru settings"""
     logger.remove()
-    logger.add(
-        "logs/log_{time}.log", rotation="1 day", level="DEBUG" if debug else "INFO"
-    )
+    logger.add("logs/log_{time}.log", rotation="1 day", level=mode)
 
     logger.add(
         stdout,
@@ -15,7 +13,7 @@ async def start(debug: bool):
         format="<green>{time:DD.MM.YY H:mm:ss}</green> "
         "| <yellow><b>{level}</b></yellow> | <magenta>{file}</magenta> | <cyan>{"
         "message}</cyan>",
-        level="DEBUG" if debug else "INFO",
+        level=mode,
     )
 
     logger.debug("Logger configs updated")

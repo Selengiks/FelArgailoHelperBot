@@ -1,4 +1,6 @@
 aiogram==2.25.1
 loguru==0.7.0
 python-dotenv==1.0.0
-Telethon~=1.29.2
+redis==4.6.0
+Requests==2.31.0
+telethon==1.29.2

@@ -5,12 +5,13 @@ from dotenv import load_dotenv
 from loguru import logger
 from support.bots import bot
 from support.telebot import tbot
+from utils.media_sender import send_media
 from utils.media_sync import media_files
 
 
 load_dotenv()
 channel_id = os.getenv("CHANNEL")
-last_gif = None
+last_media = None
 
 
 async def get_latest_users():
@@ -42,7 +43,7 @@ async def track_channel_member_count():
             ):  # prevent spam by leave\join
                 await post_new_follower_media()
             else:
-                logger.debug(f"Spam attempt avoided for post_new_follower_media()")
+                logger.warning(f"Spam attempt avoided for post_new_follower_media()")
 
             previous_member_count = member_count
         elif member_count < previous_member_count:
@@ -52,35 +53,35 @@ async def track_channel_member_count():
             ):  # prevent spam by leave\join
                 await post_leave_follower_media()
             else:
-                logger.debug(f"Spam attempt avoided for post_leave_follower_media()")
+                logger.warning(f"Spam attempt avoided for post_leave_follower_media()")
             previous_member_count = member_count
         await asyncio.sleep(60)
 
 
 async def post_new_follower_media():
     """Post welcome media for new followers"""
-    global last_gif
-    gifs = [
+    global last_media
+    medias = [
         file_path
         for folder in media_files.values()
         for file_path in folder.values()
-        if "new_follower_" in file_path
+        if "new_follower_" in os.path.splitext(file_path)[0]
     ]
-    gif = random.choice(gifs)
-    while gif == last_gif:
-        gif = random.choice(gifs)
-    last_gif = gif
+    media = random.choice(medias)
+    while media == last_media:
+        media = random.choice(medias)
+    last_media = media
     await asyncio.sleep(10)
-    await bot.send_animation(channel_id, open(gif, "rb"))
-    logger.debug("post_new_follower_gif()")
+    await send_media(bot, channel_id, media)
+    logger.debug("post_new_follower_media()")
 
 
 async def post_leave_follower_media():
     """Post media if somebody left the channel. Now do nothing"""
-    logger.debug("post_leave_follower_gif()")
+    logger.debug("post_leave_follower_media()")
 
 
 async def on_startup():
     """Plugin allow you track subscribers count from channel and do different things, based on it"""
     asyncio.create_task(track_channel_member_count())
-    logger.debug("followers.py loaded")
+    logger.trace("followers.py loaded")

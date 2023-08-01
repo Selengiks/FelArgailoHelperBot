@@ -1,11 +1,9 @@
-# stealer.py
-
 import os
 from aiogram import types
 from support.bots import dp
 from loguru import logger
 from dotenv import load_dotenv
-from utils import sender
+from utils import message_sender
 
 load_dotenv()
 channel_id = os.getenv("CHANNEL")
@@ -31,7 +29,7 @@ async def stealer(message: types.Message):
         else:
             caption = f"Вкрадено у @{answer.from_user.username or answer.from_user.full_name}\n\n{tag}"
         try:
-            await sender.send_data(
+            await message_sender.send_data(
                 answer,
                 channel_id,
                 disable_web_page_preview=True,
@@ -46,4 +44,4 @@ async def stealer(message: types.Message):
 
 async def on_startup():
     """Plugin allow you, via command send somebody messages or media to your channel"""
-    logger.debug("stealer.py loaded")
+    logger.trace("stealer.py loaded")

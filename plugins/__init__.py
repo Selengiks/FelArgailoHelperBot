@@ -1,11 +1,13 @@
 from plugins.channel import followers
+from plugins.channel.notifier import stream_notifier
 from plugins.chat import stealer
 from loguru import logger
 
 
 async def initialize_plugins():
     await followers.on_startup()
+    await stream_notifier.on_startup()
     await stealer.on_startup()
     # Here you can add another plugins
 
-    logger.debug("plugins loaded")
+    logger.trace("plugins loaded")

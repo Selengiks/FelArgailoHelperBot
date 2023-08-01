@@ -1,5 +1,5 @@
 import typing
-from aiogram import md, types
+from . import md, types
 
 
 async def send_data(

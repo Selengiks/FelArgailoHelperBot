@@ -3,6 +3,7 @@ import asyncio
 from aiogram import types
 from loguru import logger
 from support.bots import dp
+from support.redis_db import db
 from run import DEBUG_LOGGING
 
 media_folder = "media"
@@ -33,12 +34,22 @@ async def sync_media():
                 file_path = file_path[file_path.index(media_folder) :]
                 new_media_files[folder][file] = file_path
 
+        # Add files to Redis database
+        for folder, files in new_media_files.items():
+            db.hmset(folder, files)
+
         # Add files
         for folder, files in new_media_files.items():
             if folder not in media_files:
                 media_files[folder] = {}
             for file, file_path in files.items():
                 media_files[folder][file] = file_path
+
+        # Remove files from Redis database
+        for folder, files in list(media_files.items()):
+            for file in list(files):
+                if folder not in new_media_files or file not in new_media_files[folder]:
+                    db.hdel(folder, file)
 
         # Remove files
         for folder, files in list(media_files.items()):
@@ -48,11 +59,12 @@ async def sync_media():
             if not media_files[folder]:
                 del media_files[folder]
         if DEBUG_LOGGING:
+            logger.debug(f"Files sync result:")
             for k, v in media_files.items():
-                logger.debug(f"Files sync result:\nKey: {k}. Values: {v}")
+                logger.debug(f"Key: {k}.\nValues: {v}")
         await asyncio.sleep(3600)  # Set update interval in seconds (3600 = 1 hour)
 
 
 async def on_startup():
     asyncio.create_task(sync_media())
-    logger.debug("media_sync loaded")
+    logger.trace("media_sync loaded")
