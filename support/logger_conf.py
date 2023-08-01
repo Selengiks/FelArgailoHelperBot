@@ -11,7 +11,7 @@ async def start(mode: str):
         stdout,
         colorize=True,
         format="<green>{time:DD.MM.YY H:mm:ss}</green> "
-        "| <yellow><b>{level}</b></yellow> | <magenta>{file}</magenta> | <cyan>{"
+        "| <level>{level}</level> | <magenta>{file}</magenta> | <cyan>{"
         "message}</cyan>",
         level=mode,
     )

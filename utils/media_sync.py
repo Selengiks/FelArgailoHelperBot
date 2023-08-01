@@ -3,7 +3,11 @@ import asyncio
 from aiogram import types
 from loguru import logger
 from support.bots import dp
-from support.redis_db import db
+
+try:
+    from support.redis_db import db
+except ImportError:
+    logger.warning("Redis not enabled!")
 from run import DEBUG_LOGGING
 
 media_folder = "media"
@@ -36,7 +40,10 @@ async def sync_media():
 
         # Add files to Redis database
         for folder, files in new_media_files.items():
-            db.hmset(folder, files)
+            try:
+                db.hmset(folder, files)
+            except NameError:
+                logger.warning("Redis not enabled. Data not processed!")
 
         # Add files
         for folder, files in new_media_files.items():
@@ -49,7 +56,10 @@ async def sync_media():
         for folder, files in list(media_files.items()):
             for file in list(files):
                 if folder not in new_media_files or file not in new_media_files[folder]:
-                    db.hdel(folder, file)
+                    try:
+                        db.hdel(folder, file)
+                    except NameError:
+                        logger.warning("Redis not enabled. Data not processed!")
 
         # Remove files
         for folder, files in list(media_files.items()):
