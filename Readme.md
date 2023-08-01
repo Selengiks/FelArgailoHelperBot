@@ -1,9 +1,13 @@
 # Fel Argailo, multifunctional telegram bot for streamer, with minor but usable functions
 
-- ### Send message to Telegram AND\OR Discord when stream is started - *WIP*
+## Currently, can:
+
 - ### Welcome new subscribers on your channel, by post random gif or media
+- ### Allow via command as reply on message, send message as post to channel
+
+## In progress
+- ### Send message to Telegram AND\OR Discord when stream is started - *WIP*
 - ### Unpin channel posts in your connected chat - *WIP*
-- ### Allow via command as reply on message, send message as post to channel - *WIP*
 - ### All users whose media you "stole" will be placed in the local chat leaderboard - *WIP*
 - ### Has some moderation features to save some time and clicks without opening the chat settings - *WIP*
 - ### Allows you to store a variety of text, media or other types of data and send them by keyword or phrase - *WIP*
@@ -40,6 +44,9 @@
 - **API_ID=''** Specifies the ID obtained when creating a web application at https://my.telegram.org/apps
 - **API_HASH=''** Specifies the hash obtained when creating a web application at https://my.telegram.org/apps**
 
+#### Twitch configs
+- **CLIENT_ID=''** Your Twitch client id. More on https://dev.twitch.tv/console/apps/ or google how to get it
+- **CLIENT_SECRET=''** Your client secret key. How to is same as above
 ### 4. Run the bot by running the `run.py` file. At first launch, you will need to authorize the account, which will be used by telethon as a bot, by specifying a phone number and entering a confirmation code that will come
 
 ## Project Structure

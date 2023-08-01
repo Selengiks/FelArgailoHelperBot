@@ -29,12 +29,13 @@ async def errors(update: types.Update, error: Exception):
 
 async def on_startup(dsp: Dispatcher):
     logger.info("Is starting...")
-    await support.logger_conf.start(DEBUG_LOGGING)
-    await plugins.initialize_plugins()
-    await utils.initialize_utils()
 
     bot_info = await dsp.bot.me
     tbot_info = await tbot.get_me()
+
+    await support.logger_conf.start(DEBUG_LOGGING)
+    await plugins.initialize_plugins()
+    await utils.initialize_utils()
 
     logger.info(f"Bot {bot_info.full_name} [@{bot_info.username}] started!")
     logger.info(f"Telethon session established for [@{tbot_info.username}]!")
