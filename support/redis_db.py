@@ -4,7 +4,7 @@ import redis
 
 load_dotenv()
 
-ENABLE_REDIS = False
+ENABLE_REDIS = True
 
 if ENABLE_REDIS:
     db = redis.Redis(

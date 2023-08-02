@@ -4,6 +4,7 @@ from support.bots import dp
 from loguru import logger
 from dotenv import load_dotenv
 from utils import message_sender
+from support.redis_db import db
 
 load_dotenv()
 channel_id = os.getenv("CHANNEL")
@@ -35,6 +36,20 @@ async def stealer(message: types.Message):
                 disable_web_page_preview=True,
                 caption=caption,
             )
+            try:
+                chat_id = str(message.chat.id)
+                user_id = str(answer.from_user.id)
+                if not db.exists(chat_id):
+                    db.hset(chat_id, user_id, 1)
+                else:
+                    count = db.hget(chat_id, user_id)
+                    if count is None:
+                        db.hset(chat_id, user_id, 1)
+                    else:
+                        db.hincrby(chat_id, user_id, 1)
+            except Exception as e:
+                logger.error(e)
+
         except Exception as e:
             logger.error(e)
     msg = f"Data has been stolen successfully!"
