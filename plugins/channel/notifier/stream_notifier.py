@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from loguru import logger
-from plugins.channel.notifier import twitch_notifier, youtube_notifier
+from plugins.channel.notifier import get_twich_notification, get_youtube_notification
 
 load_dotenv()
 
@@ -11,11 +11,13 @@ youtube_integration = True
 
 async def on_startup():
     if twitch_integration:
-        await twitch_notifier.on_startup(
-            os.getenv("TWITCH_CLIENT_ID"), os.getenv("TWITCH_CLIENT_SECRET")
+        await get_twich_notification.on_startup(
+            os.getenv("TWITCH_CLIENT_ID"),
+            os.getenv("TWITCH_CLIENT_SECRET"),
+            os.getenv("TWITCH_USERNAME"),
         )
     if youtube_integration:
-        await youtube_notifier.on_startup()
+        await get_youtube_notification.on_startup()
     if not twitch_integration and youtube_integration:
         logger.warning("No stream platform enabled")
 

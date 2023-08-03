@@ -4,11 +4,11 @@
 
 - ### Welcome new subscribers on your channel, by post random gif or media
 - ### Allow via command as reply on message, send message as post to channel
+- ### All users whose media you "stole" will be placed in the local chat leaderboard
 
 ## In progress
-- ### Send message to Telegram AND\OR Discord when stream is started - *WIP*
+- ### Send message to Telegram AND\OR Discord when stream is started - *IN PROCESS*
 - ### Unpin channel posts in your connected chat - *WIP*
-- ### All users whose media you "stole" will be placed in the local chat leaderboard - *WIP*
 - ### Has some moderation features to save some time and clicks without opening the chat settings - *WIP*
 - ### Allows you to store a variety of text, media or other types of data and send them by keyword or phrase - *WIP*
 
@@ -16,38 +16,25 @@
 
 ### 1. Clone this repository to your computer.
 ### 2. Install the necessary dependencies by running the command `pip install -r requirements.txt` in the terminal.
-### 3. Rename the `local.env` file to `.env` and fill it with the data specified there. Below is an explanation:
-### `.env` Structure
-#### Base bot settings
-- **POLLING='True'** Responsible for the aiogram part of the bot mode. Set False to switch to Webhook mode
-- **LOCAL_SERVER_URL=''** For using your own API server. Left blank if not necessary
+### 3. Rename the `local.env` file to `.env` and fill it with the data specified.
+### 4. After .env filled, and project is running, add bot(s) to channel and chat, and give admin rights
+## *Important notes:* 
+### The bot is developed using two libraries, aiogram and telethon, so for full functionality you need to have a classic bot with a token, and a Telegram account that will be used as a telethon user bot. Without the use of telethons, some functions, such as receiving the admin log of the channel, will not work
+### More details about the difference between see there: https://docs.telethon.dev/en/stable/concepts/botapi-vs-mtproto.html and there: https://github.com/LonamiWebs/Telethon/wiki/MTProto-vs-HTTP-Bot-API
 
-#### Telegram configs
-- **BOT_TOKEN=''** # Set here your bot token, received from @BotFather
-- **ADMIN=''**  # Global admin ID, who can use bot functionality
-- **CHANNEL=''**  # Target channel, need for some functions, which interract with channel
+## Usage
 
-#### Webhook example configs, for bot in Webhook mode
-- **WEBHOOK_HOST='https://webhook.webhookapp.com'**
-- **WEBHOOK_PATH='/webhook/${BOT_TOKEN}'**
-- **WEBHOOK_URL='${WEBHOOK_HOST}${WEBHOOK_PATH}'**
-- **WEBAPP_HOST='0.0.0.0'**
-- **WEBAPP_PORT='8005'**
-
-#### Redis configs, for availability use local storage instead MemoryStorage
-- **REDIS_HOST='localhost'** # Set your db host, or leave for local db
-- **REDIS_PORT='6379'** #  Set db host port, or leave default
-- **REDIS_DB='0'** # Set number of redis db (Redis allow use up to 16 db via db number 0-16)
-- **REDIS_DB_NAME='FelArgailoDB'** # Set db name for your bot, or leave default
-
-#### Telethon configs, for telethon side
-- **API_ID=''** Specifies the ID obtained when creating a web application at https://my.telegram.org/apps
-- **API_HASH=''** Specifies the hash obtained when creating a web application at https://my.telegram.org/apps**
-
-#### Twitch configs
-- **CLIENT_ID=''** Your Twitch client id. More on https://dev.twitch.tv/console/apps/ or google how to get it
-- **CLIENT_SECRET=''** Your client secret key. How to is same as above
-### 4. Run the bot by running the `run.py` file. At first launch, you will need to authorize the account, which will be used by telethon as a bot, by specifying a phone number and entering a confirmation code that will come
+### 1. When a new user subscribes to the channel, the bot will automatically send random media, which will be signed in the new_follower_ format and located in sub-folders of the main media folder. Currently, correctly supports gif, video, picture formats
+### 2. Through the `!steal` command as a response to a user's message, the bot forwards the message on its behalf to the channel
+#### `!steal patterns`
+```
+!steal - default pattern, post message to channel with default caption "Вкрадено у @username" and #meme tag.
+!steal Some text - post message with "Some text" caption.
+!steal #tag - post message with caption "Вкрадено у @username" and #tag tag.
+!steal Some text #tag - combine previous patterns. Message with "Some text" caption and #tag tag.
+```
+### 3. Throught `!leaderboard`, you can display local leaderboard, with users and the number of messages "stolen" from them
+### 4. *IN PROGRESS*
 
 ## Project Structure
 
