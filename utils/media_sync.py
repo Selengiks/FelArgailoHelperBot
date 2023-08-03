@@ -17,7 +17,13 @@ media_files = {}
 @dp.message_handler(is_admin=True, commands="media", commands_prefix="!")
 async def media_list(message: types.Message):
     """Return media files list to chat"""
-    await message.answer(str(media_files))
+    medialist_message = ""
+    for folder, files in media_files.items():
+        medialist_message += f"В /{folder}:\n"
+        for file in files:
+            medialist_message += f"{file}\n"
+        medialist_message += "\n"
+    await message.answer(medialist_message)
 
 
 @dp.message_handler(is_admin=True, commands="add", commands_prefix="!")
