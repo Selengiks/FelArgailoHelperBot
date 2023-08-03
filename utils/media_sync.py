@@ -20,6 +20,24 @@ async def media_list(message: types.Message):
     await message.answer(str(media_files))
 
 
+@dp.message_handler(is_admin=True, commands="add", commands_prefix="!")
+async def add_media(message: types.Message):
+    """Add media files to bot"""
+    pass
+
+
+@dp.message_handler(is_admin=True, commands="edit", commands_prefix="!")
+async def edit_media(message: types.Message):
+    """Edit media files to bot"""
+    pass
+
+
+@dp.message_handler(is_admin=True, commands="delete", commands_prefix="!")
+async def delete_media(message: types.Message):
+    """Edit media files from bot"""
+    pass
+
+
 async def sync_media():
     """Checks the media folder and all sub-folders, and populates the dictionary
     with the files and their path in the format media_files = {"folder_name": {"file_name": path_to_file}}
