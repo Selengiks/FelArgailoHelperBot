@@ -86,4 +86,4 @@ async def update_leaderboard():
                 else:
                     result[key] = int(value)
 
-    db.hset(global_leaderboard, result)
+    db.hmset(global_leaderboard, result)
