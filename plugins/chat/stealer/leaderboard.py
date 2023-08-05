@@ -1,7 +1,17 @@
-from aiogram import md, types
+from aiogram import types
 from support.bots import dp, bot
 from loguru import logger
 from support.redis_db import db
+
+
+async def get_user(chat_id, user_id):
+    user = await bot.get_chat_member(chat_id, user_id)
+    try:
+        name = user.user.full_name or f"{user.user.username}"
+    except Exception as e:
+        logger.error(e)
+        name = user_id
+    return name
 
 
 @dp.message_handler(commands="leaderboard", commands_prefix="!")
@@ -42,12 +52,24 @@ async def leaderboard(message: types.Message):
             name = key
 
         medal = medals[i] if i < 3 else f"{i + 1:02d}"
-        # text += f"{medal}》👤 {md.hlink(name, f'@{user.user.username}')}. Вкрадено {count} раз(ів)\n"
-        text += (
-            f'{medal}》👤 <a href="tg://user?id={user.user.id}">{user.user.full_name or user.user.username}</a>. '
-            f"Вкрадено {count} раз(ів)\n"
+        text += f"{medal}》👤 {name}. Вкрадено {count} раз(ів)\n"
+    sent_message = await message.answer(
+        text, parse_mode="HTML", disable_web_page_preview=True
+    )
+
+    # Edit the message to add links to user profiles
+    text_with_links = text
+    for i, item in enumerate(sorted_data):
+        key = int(item[0])
+        user_id = int(key)
+        name = await get_user(chat_id, user_id)
+
+        text_with_links = text_with_links.replace(
+            f"👤 {name}", f'👤 <a href="tg://user?id={user_id}">{name}</a>'
         )
-    await message.answer(text, parse_mode="HTML", disable_web_page_preview=True)
+    await sent_message.edit_text(
+        text_with_links, parse_mode="HTML", disable_web_page_preview=True
+    )
 
 
 async def on_startup():
