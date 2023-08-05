@@ -42,7 +42,11 @@ async def leaderboard(message: types.Message):
             name = key
 
         medal = medals[i] if i < 3 else f"{i + 1:02d}"
-        text += f"{medal}》👤 {md.hlink(name, f'https://t.me/{user.user.username}')}. Вкрадено {count} раз(ів)\n"
+        # text += f"{medal}》👤 {md.hlink(name, f'@{user.user.username}')}. Вкрадено {count} раз(ів)\n"
+        text += (
+            f'{medal}》👤 <a href="tg://user?id={user.user.id}">{user.user.full_name or user.user.username}</a>. '
+            f"Вкрадено {count} раз(ів)\n"
+        )
     await message.answer(text, parse_mode="HTML", disable_web_page_preview=True)
 
 
