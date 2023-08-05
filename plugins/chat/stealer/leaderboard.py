@@ -8,14 +8,27 @@ from support.redis_db import db
 async def leaderboard(message: types.Message):
     """Show the leaderboard of the chat"""
     chat_id = str(message.chat.id)
-    if not db.exists(chat_id):
-        await message.answer("No leaderboard yet")
-        return
+    args = message.text.split()
+    if len(args) >= 2:
+        if not db.exists("leaderboard"):
+            await message.answer("No global leaderboard yet")
+            return
+        if args[1] == "global":
+            data = db.hgetall("leaderboard")
+            sorted_data = sorted(data.items(), key=lambda x: int(x[1]), reverse=True)
+            text = '🏆 Міжнародний Мемо-Фонд "Фелікс-мемокрад" 🏆\n\n'
+        else:
+            sorted_data = []
+            text = ""
+            await message.answer('Unrecognized !leaderboard param(s). Try "global"')
+    else:
+        if not db.exists(chat_id):
+            await message.answer("No leaderboard yet")
+            return
+        data = db.hgetall(chat_id)
+        sorted_data = sorted(data.items(), key=lambda x: int(x[1]), reverse=True)
+        text = '🏆 Благодійний фонд ТОВ "Фелікс-мемокрад" 🏆\n\n'
 
-    data = db.hgetall(chat_id)
-    sorted_data = sorted(data.items(), key=lambda x: int(x[1]), reverse=True)
-
-    text = '🏆 Благодійний фонд ТОВ "Фелікс-мемокрад" 🏆\n\n'
     medals = ["🥇", "🥈", "🥉"]
     for i, item in enumerate(sorted_data):
         key = int(item[0])
