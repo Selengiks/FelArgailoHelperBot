@@ -20,13 +20,32 @@ async def leaderboard(message: types.Message):
     chat_id = str(message.chat.id)
     args = message.text.split()
     if len(args) >= 2:
-        if not db.exists("leaderboard"):
-            await message.answer("No global leaderboard yet")
-            return
         if args[1] == "global":
-            data = db.hgetall("leaderboard")
+            # Отримайте всі ключі, які закінчуються на :score_g
+            cursor = 0
+            keys = []
+            while True:
+                cursor, new_keys = db.scan(
+                    cursor=cursor, match="leaderboard:global:*:score_g"
+                )
+                keys.extend(new_keys)
+                if cursor == 0:
+                    break
+
+            data = {}
+            for key in keys:
+                # Отримайте значення score_g для кожного ключа
+                user_id = key.split(":")[2]
+                score_g = int(
+                    db.zscore(f"leaderboard:global:{user_id}:score_g", "score_g")
+                )
+                data[key] = score_g
+
             sorted_data = sorted(data.items(), key=lambda x: int(x[1]), reverse=True)
-            text = '🏆 Міжнародний Мемо-Фонд "Фелікс-мемокрад" 🏆\n\n'
+            if not sorted_data:
+                text = "No global leaderboard yet"
+            else:
+                text = '🏆 Міжнародний Мемо-Фонд "Фелікс-мемокрад" 🏆\n\n'
         else:
             sorted_data = []
             text = ""
@@ -34,44 +53,67 @@ async def leaderboard(message: types.Message):
                 'Unrecognized !leaderboard param(s). Try "!leaderboard global"'
             )
     else:
-        if not db.exists(chat_id):
-            await message.answer("No leaderboard yet")
-            return
-        data = db.hgetall(chat_id)
+        # Отримайте всі ключі, які закінчуються на :score_l
+        cursor = 0
+        keys = []
+        while True:
+            cursor, new_keys = db.scan(
+                cursor=cursor, match=f"leaderboard:local:{chat_id}:*:score_l"
+            )
+            keys.extend(new_keys)
+            if cursor == 0:
+                break
+
+        data = {}
+        for key in keys:
+            # Отримайте значення score_l для кожного ключа
+            user_id = key.split(":")[3]
+            score_l = db.zscore(
+                f"leaderboard:local:{chat_id}:{user_id}:score_l", "score_l"
+            )
+            data[key] = score_l
+
         sorted_data = sorted(data.items(), key=lambda x: int(x[1]), reverse=True)
-        text = '🏆 Благодійний фонд ТОВ "Фелікс-мемокрад" 🏆\n\n'
+        if not sorted_data:
+            text = "No local leaderboard yet"
+        else:
+            text = '🏆 Благодійний фонд ТОВ "Фелікс-мемокрад" 🏆\n\n'
 
-    medals = ["🥇", "🥈", "🥉"]
-    for i, item in enumerate(sorted_data):
-        key = int(item[0])
-        count = int(item[1])
-        user_id = int(key)
-        user = await bot.get_chat_member(chat_id, user_id)
-        try:
-            name = user.user.full_name or f"{user.user.username}"
-        except Exception as e:
-            logger.error(e)
-            name = key
+    if sorted_data:
+        medals = ["🥇", "🥈", "🥉"]
+        for i, item in enumerate(sorted_data):
+            key = item[0]
+            count = int(item[1])
+            # Отримайте user_id з ключа
+            user_id = int(key.split(":")[-2])
+            user = await bot.get_chat_member(chat_id, user_id)
+            try:
+                name = user.user.full_name or f"{user.user.username}"
+            except Exception as e:
+                logger.error(e)
+                name = key
 
-        medal = medals[i] if i < 3 else f"{i + 1:02d}"
-        text += f"{medal}》👤 {name}. Вкрадено {count} раз(ів)\n"
+            medal = medals[i] if i < 3 else f"{i + 1:02d}"
+            text += f"{medal}》👤 {name}. Вкрадено {count} раз(ів)\n"
     sent_message = await message.answer(
         text, parse_mode="HTML", disable_web_page_preview=True
     )
 
     # Edit the message to add links to user profiles
-    text_with_links = text
-    for i, item in enumerate(sorted_data):
-        key = int(item[0])
-        user_id = int(key)
-        name = await get_user(chat_id, user_id)
+    if sorted_data:
+        text_with_links = text
+        for i, item in enumerate(sorted_data):
+            key = item[0]
+            # Отримайте user_id з ключа
+            user_id = int(key.split(":")[-2])
+            name = await get_user(chat_id, user_id)
 
-        text_with_links = text_with_links.replace(
-            f"👤 {name}", f'👤 <a href="tg://user?id={user_id}">{name}</a>'
+            text_with_links = text_with_links.replace(
+                f"👤 {name}", f'👤 <a href="tg://user?id={user_id}">{name}</a>'
+            )
+        await sent_message.edit_text(
+            text_with_links, parse_mode="HTML", disable_web_page_preview=True
         )
-    await sent_message.edit_text(
-        text_with_links, parse_mode="HTML", disable_web_page_preview=True
-    )
 
 
 async def on_startup():

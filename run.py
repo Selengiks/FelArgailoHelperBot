@@ -24,9 +24,6 @@ async def errors(update: types.Update, error: Exception):
         raise error
     except Exception as e:
         logger.exception(e)
-        await bot.send_message(
-            cfg.CUSSER, text=f"Bot error occurred! Some details: {e}"
-        )
     return True
 
 

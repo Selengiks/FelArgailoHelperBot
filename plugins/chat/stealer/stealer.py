@@ -42,7 +42,7 @@ async def stealer(message: types.Message):
                 user = answer.from_user
 
                 # Local leaderboards
-                if not db.exists(f"leaderboard:local:{chat_id}:{user.id}:score"):
+                if not db.exists(f"leaderboard:local:{chat_id}:{user.id}:score_l"):
                     db.sadd(
                         f"leaderboard:local:{chat_id}:{user.id}:id",
                         user.id,
@@ -56,21 +56,27 @@ async def stealer(message: types.Message):
                         user.full_name,
                     )
                     db.zadd(
-                        f"leaderboard:local:{chat_id}:{user.id}:score", {"score": 1}
+                        f"leaderboard:local:{chat_id}:{user.id}:score_l", {"score_l": 1}
                     )
 
                 else:
-                    if db.zcard(f"leaderboard:local:{chat_id}:{user.id}:score") is None:
+                    if (
+                        db.zcard(f"leaderboard:local:{chat_id}:{user.id}:score_l")
+                        is None
+                    ):
                         db.zadd(
-                            f"leaderboard:local:{chat_id}:{user.id}:score", {"score": 1}
+                            f"leaderboard:local:{chat_id}:{user.id}:score_l",
+                            {"score_l": 1},
                         )
                     else:
                         db.zincrby(
-                            f"leaderboard:local:{chat_id}:{user.id}:score", 1, "score"
+                            f"leaderboard:local:{chat_id}:{user.id}:score_l",
+                            1,
+                            "score_l",
                         )
 
                 # Global leaderboards
-                if not db.exists(f"leaderboard:global:{user.id}:gscore"):
+                if not db.exists(f"leaderboard:global:{user.id}:score_g"):
                     db.sadd(
                         f"leaderboard:global:{user.id}:id",
                         user.id,
@@ -83,13 +89,15 @@ async def stealer(message: types.Message):
                         f"leaderboard:global:{user.id}:full_name",
                         user.full_name,
                     )
-                    db.zadd(f"leaderboard:global:{user.id}:gscore", {"gscore": 1})
+                    db.zadd(f"leaderboard:global:{user.id}:score_g", {"score_g": 1})
 
                 else:
-                    if db.zcard(f"leaderboard:global:{user.id}:gscore") is None:
-                        db.zadd(f"leaderboard:global:{user.id}:gscore", {"gscore": 1})
+                    if db.zcard(f"leaderboard:global:{user.id}:score_g") is None:
+                        db.zadd(f"leaderboard:global:{user.id}:score_g", {"score_g": 1})
                     else:
-                        db.zincrby(f"leaderboard:global:{user.id}:gscore", 1, "gscore")
+                        db.zincrby(
+                            f"leaderboard:global:{user.id}:score_g", 1, "score_g"
+                        )
 
             except Exception as e:
                 logger.error(e)
