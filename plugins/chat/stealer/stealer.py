@@ -10,9 +10,7 @@ load_dotenv()
 channel_id = os.getenv("CHANNEL")
 
 
-@dp.message_handler(
-    is_admin=True, is_reply=True, commands="ssteal", commands_prefix="!"
-)
+@dp.message_handler(is_admin=True, is_reply=True, commands="steal", commands_prefix="!")
 async def stealer(message: types.Message):
     """Via command send replied media or text to target channel"""
     if message.reply_to_message:
