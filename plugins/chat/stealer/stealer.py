@@ -8,10 +8,11 @@ from support.redis_db import db
 
 load_dotenv()
 channel_id = os.getenv("CHANNEL")
-global_leaderboard = "leaderboard"
 
 
-@dp.message_handler(is_admin=True, is_reply=True, commands="steal", commands_prefix="!")
+@dp.message_handler(
+    is_admin=True, is_reply=True, commands="ssteal", commands_prefix="!"
+)
 async def stealer(message: types.Message):
     """Via command send replied media or text to target channel"""
     if message.reply_to_message:
@@ -38,21 +39,64 @@ async def stealer(message: types.Message):
             )
             try:
                 chat_id = str(message.chat.id)
-                user_id = str(answer.from_user.id)
-                if not db.exists(chat_id):
-                    db.hset(chat_id, user_id, 1)
+                user = answer.from_user
+
+                # Local leaderboards
+                if not db.exists(f"leaderboard:local:{chat_id}:{user.id}:score"):
+                    db.sadd(
+                        f"leaderboard:local:{chat_id}:{user.id}:id",
+                        user.id,
+                    )
+                    db.sadd(
+                        f"leaderboard:local:{chat_id}:{user.id}:username",
+                        user.mention,
+                    )
+                    db.sadd(
+                        f"leaderboard:local:{chat_id}:{user.id}:full_name",
+                        user.full_name,
+                    )
+                    db.zadd(
+                        f"leaderboard:local:{chat_id}:{user.id}:score", {"score": 1}
+                    )
+
                 else:
-                    count = db.hget(chat_id, user_id)
-                    if count is None:
-                        db.hset(chat_id, user_id, 1)
+                    if db.zcard(f"leaderboard:local:{chat_id}:{user.id}:score") is None:
+                        db.zadd(
+                            f"leaderboard:local:{chat_id}:{user.id}:score", {"score": 1}
+                        )
                     else:
-                        db.hincrby(chat_id, user_id, 1)
+                        db.zincrby(
+                            f"leaderboard:local:{chat_id}:{user.id}:score", 1, "score"
+                        )
+
+                # Global leaderboards
+                if not db.exists(f"leaderboard:global:{user.id}:gscore"):
+                    db.sadd(
+                        f"leaderboard:global:{user.id}:id",
+                        user.id,
+                    )
+                    db.sadd(
+                        f"leaderboard:global:{user.id}:username",
+                        user.mention,
+                    )
+                    db.sadd(
+                        f"leaderboard:global:{user.id}:full_name",
+                        user.full_name,
+                    )
+                    db.zadd(f"leaderboard:global:{user.id}:gscore", {"gscore": 1})
+
+                else:
+                    if db.zcard(f"leaderboard:global:{user.id}:gscore") is None:
+                        db.zadd(f"leaderboard:global:{user.id}:gscore", {"gscore": 1})
+                    else:
+                        db.zincrby(f"leaderboard:global:{user.id}:gscore", 1, "gscore")
+
             except Exception as e:
                 logger.error(e)
 
         except Exception as e:
             logger.error(e)
-    await update_leaderboard()
+
     msg = f"Data has been stolen successfully!"
     logger.debug(msg)
 
@@ -60,30 +104,3 @@ async def stealer(message: types.Message):
 async def on_startup():
     """Plugin allow you, via command send somebody messages or media to your channel"""
     logger.trace("stealer.py loaded")
-
-
-async def update_leaderboard():
-    tables = db.keys()
-
-    # Set db tables to exclude
-    ignore_tables = [
-        "archives",
-        "audio",
-        "documents",
-        "gifs",
-        "images",
-        "videos",
-    ]
-
-    result = {}
-
-    for table in tables:
-        if table not in ignore_tables:
-            data = db.hgetall(table)
-            for key, value in data.items():
-                if key in result:
-                    result[key] += int(value)
-                else:
-                    result[key] = int(value)
-
-    db.hmset(global_leaderboard, result)

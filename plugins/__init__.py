@@ -6,7 +6,7 @@ from loguru import logger
 
 async def initialize_plugins():
     await followers.on_startup()
-    await stream_notifier.on_startup()
+    # await stream_notifier.on_startup()
     await stealer.on_startup()
     await leaderboard.on_startup()
     # Here you can add another plugins

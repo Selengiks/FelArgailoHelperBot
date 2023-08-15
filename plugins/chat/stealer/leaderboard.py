@@ -30,7 +30,9 @@ async def leaderboard(message: types.Message):
         else:
             sorted_data = []
             text = ""
-            await message.answer('Unrecognized !leaderboard param(s). Try "global"')
+            await message.answer(
+                'Unrecognized !leaderboard param(s). Try "!leaderboard global"'
+            )
     else:
         if not db.exists(chat_id):
             await message.answer("No leaderboard yet")

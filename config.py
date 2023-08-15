@@ -27,5 +27,6 @@ if not POLLING == "True":
     WEBAPP_PORT = os.getenv("WEBAPP_PORT", default=8000)
 
 ADMINS = [290522978]  # list of admins, who can administer bot
+CUSSER = os.getenv("OWNER")
 
 logger.debug("Bot config applied")

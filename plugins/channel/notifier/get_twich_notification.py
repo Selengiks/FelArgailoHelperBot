@@ -21,9 +21,11 @@ async def twitch_stream_handler(client_id, access_token, channel):
             logger.info(f"Handled Twitch event.{channel} is live!")
             # Do something
         else:
-            logger.debug(f"No stream events for [{channel}] channel.")
+            logger.trace(f"No stream events for [{channel}] channel.")
 
-        await asyncio.sleep(300)  # Set update interval in seconds (3600 = 1 hour)
+        await asyncio.sleep(
+            900
+        )  # Set update interval in seconds (3600 = 1 hour, 900 = 15 minutes)
 
 
 async def on_startup(client_id, client_secret, channel):
