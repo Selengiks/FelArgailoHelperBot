@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import types
 from support.bots import dp, bot
 from loguru import logger
@@ -98,6 +100,7 @@ async def leaderboard(message: types.Message):
     sent_message = await message.answer(
         text, parse_mode="HTML", disable_web_page_preview=True
     )
+    await asyncio.sleep(1)
 
     # Edit the message to add links to user profiles
     if sorted_data:

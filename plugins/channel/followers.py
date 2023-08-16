@@ -69,10 +69,10 @@ async def post_new_follower_media():
     """Post welcome media for new followers"""
     global last_media
     medias = [
-        file_path
+        file["Path"]
         for folder in media_files.values()
-        for file_path in folder.values()
-        if "new_follower_" in os.path.splitext(file_path)[0]
+        for file in folder
+        if "new_follower_" in os.path.splitext(file["Path"])[0]
     ]
     media = random.choice(medias)
     while media == last_media:
