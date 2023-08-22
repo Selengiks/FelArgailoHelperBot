@@ -12,7 +12,6 @@ channel_id = os.getenv("CHANNEL")
 
 @dp.message_handler(is_admin=True, is_reply=True, commands="steal", commands_prefix="!")
 async def stealer(message: types.Message):
-    """Via command send replied media or text to target channel"""
     if message.reply_to_message:
         answer = message.reply_to_message
         args = message.text.split()
@@ -21,6 +20,10 @@ async def stealer(message: types.Message):
             if args[1].startswith("#"):
                 tag = args[1]
                 caption = f"Вкрадено у @{answer.from_user.username or answer.from_user.full_name}\n\n{tag}"
+            elif args[1] == "-r":
+                caption = " ".join(args[2:])
+                if f"@{answer.from_user.username}" not in caption:
+                    caption += f", від пана @{answer.from_user.username or answer.from_user.full_name}"
             else:
                 caption = " ".join(args[1:])
                 if args[-1].startswith("#"):
@@ -108,5 +111,4 @@ async def stealer(message: types.Message):
 
 
 async def on_startup():
-    """Plugin allow you, via command send somebody messages or media to your channel"""
     logger.trace("stealer.py loaded")

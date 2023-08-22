@@ -45,7 +45,9 @@ async def track_channel_member_count():
                     await post_new_follower_media()
                 else:
                     logger.warning(
-                        f"Spam attempt avoided for post_new_follower_media()"
+                        "Spam attempt avoided for post_new_follower_media()\n"
+                        f"Latest joined users:\n{latest_users['joined']}\n"
+                        f"Latest left users\n{latest_users['left']}"
                     )
 
                 previous_member_count = member_count
@@ -57,7 +59,9 @@ async def track_channel_member_count():
                     await post_leave_follower_media()
                 else:
                     logger.warning(
-                        f"Spam attempt avoided for post_leave_follower_media()"
+                        "Spam attempt avoided for post_leave_follower_media()\n"
+                        f"Latest joined users:\n{latest_users['joined']}\n"
+                        f"Latest left users\n{latest_users['left']}"
                     )
                 previous_member_count = member_count
             await asyncio.sleep(60)
