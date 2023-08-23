@@ -23,7 +23,7 @@ async def stealer(message: types.Message):
             elif args[1] == "-r":
                 caption = " ".join(args[2:])
                 if f"@{answer.from_user.username}" not in caption:
-                    caption += f", від пана @{answer.from_user.username or answer.from_user.full_name}"
+                    caption += f"\n\n{tag} від пана @{answer.from_user.username or answer.from_user.full_name}"
             else:
                 caption = " ".join(args[1:])
                 if args[-1].startswith("#"):

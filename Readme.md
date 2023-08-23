@@ -32,7 +32,7 @@
 !steal Some text - post message with "Some text" caption.
 !steal #tag - post message with caption "Вкрадено у @username" and #tag tag.
 !steal Some text #tag - combine previous patterns. Message with "Some text" caption and #tag tag.
-!steal -a Some text - -a parameter allow to add caption word by word. Also add username to the end, if in caption will not be mentioned
+!steal -r Some text - -r parameter allow to add caption word by word. Also add username to the end, if in caption will not be mentioned
 ```
 ### 3. Throught `!leaderboard`, you can display local leaderboard, with users and the number of messages "stolen" from them
 ### 4. *IN PROGRESS*
