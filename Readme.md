@@ -3,12 +3,12 @@
 ## Currently, can:
 
 - ### Welcome new subscribers on your channel, by post random gif or media
+- ### Unpin channel posts in your connected chat
 - ### Allow via command as reply on message, send message as post to channel
 - ### All users whose media you "stole" will be placed in the local chat leaderboard
 
 ## In progress
 - ### Send message to Telegram AND\OR Discord when stream is started - *IN PROCESS*
-- ### Unpin channel posts in your connected chat - *WIP*
 - ### Has some moderation features to save some time and clicks without opening the chat settings - *WIP*
 - ### Allows you to store a variety of text, media or other types of data and send them by keyword or phrase - *WIP*
 
@@ -32,6 +32,7 @@
 !steal Some text - post message with "Some text" caption.
 !steal #tag - post message with caption "Вкрадено у @username" and #tag tag.
 !steal Some text #tag - combine previous patterns. Message with "Some text" caption and #tag tag.
+!steal -a Some text - -a parameter allow to add caption word by word. Also add username to the end, if in caption will not be mentioned
 ```
 ### 3. Throught `!leaderboard`, you can display local leaderboard, with users and the number of messages "stolen" from them
 ### 4. *IN PROGRESS*
