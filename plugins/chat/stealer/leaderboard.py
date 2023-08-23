@@ -112,7 +112,7 @@ async def leaderboard(message: types.Message):
             name = await get_user(chat_id, user_id)
 
             text_with_links = text_with_links.replace(
-                f"👤 {name}", f'👤 <a href="tg://user?id={user_id}">{name}</a>'
+                f"👤 {name}", f'👤 <a href="tg://user?id={user_id}">{name}</a>', 1
             )
         await sent_message.edit_text(
             text_with_links, parse_mode="HTML", disable_web_page_preview=True

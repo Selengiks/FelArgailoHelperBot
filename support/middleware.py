@@ -38,7 +38,7 @@ class LoguruMiddleware(BaseMiddleware):
             f"on_pre_process_message\n"
             f"Received message [ID:{message.message_id}] "
             f"from [ID:{message.from_user.id}][@{message.from_user.username}] "
-            f"\nMessage body: {message.text}\nRaw: {message}"
+            f"\nRaw: {message}"
         )
 
     async def on_post_process_message(
