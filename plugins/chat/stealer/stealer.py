@@ -14,26 +14,35 @@ channel_id = os.getenv("CHANNEL")
 async def stealer(message: types.Message):
     if message.reply_to_message:
         answer = message.reply_to_message
+        usr = f"@{answer.from_user.username if answer.from_user.username is not None else answer.from_user.full_name}"
         args = message.text.split()
         tag = "#meme"
         if len(args) > 1:
             if args[1].startswith("#"):
                 tag = args[1]
-                caption = f"Вкрадено у @{answer.from_user.username or answer.from_user.full_name}\n\n{tag}"
+                caption = f"Вкрадено у {usr}\n\n{tag}"
+
             elif args[1] == "-r":
                 caption = " ".join(args[2:])
                 if not any(word.startswith("#") for word in caption.split()):
                     caption += f"\n\n{tag}"
 
                 if f"@{answer.from_user.username}" not in caption:
-                    caption += f", від пана @{answer.from_user.username or answer.from_user.full_name}"
+                    caption += f", від пана {usr}"
+
+            elif args[1] == "cat":
+                caption = f"Кіт пана {usr}"
+
+            elif args[1] == "cats":
+                caption = f"Коти пана {usr}"
+
             else:
                 caption = " ".join(args[1:])
                 if args[-1].startswith("#"):
                     tag = args[-1]
                     caption = f"{caption[:-len(tag)]}\n\n{tag}"
         else:
-            caption = f"Вкрадено у @{answer.from_user.username or answer.from_user.full_name}\n\n{tag}"
+            caption = f"Вкрадено у {usr}\n\n{tag}"
         try:
             await message_sender.send_data(
                 answer,

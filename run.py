@@ -1,6 +1,8 @@
+import asyncio
 import support.logger_conf
 import config as cfg
 from aiogram import Dispatcher, executor, types
+from aiogram.utils import exceptions
 from aiogram.utils.executor import start_webhook
 from loguru import logger
 from support import dp, bot, tbot, LoguruMiddleware
@@ -22,6 +24,11 @@ async def errors(update: types.Update, error: Exception):
     logger.warning(update)
     try:
         raise error
+    except exceptions.RetryAfter as e:
+        logger.error(
+            f"Target [ID:{update.bot.id}]: Flood limit is exceeded. Sleep {e.timeout} seconds."
+        )
+        await asyncio.sleep(e.timeout)
     except Exception as e:
         logger.exception(e)
     return True
