@@ -1,6 +1,5 @@
-from aiogram import Bot
+from imports.global_imports import *
 from aiogram.bot.api import TELEGRAM_PRODUCTION, TelegramAPIServer
-from aiogram.dispatcher import Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 import config as cfg

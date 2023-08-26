@@ -1,9 +1,5 @@
-import os
-from dotenv import load_dotenv
-
-from loguru import logger
-
-load_dotenv()
+from imports.global_imports import *
+from imports.env_import import *
 
 # Base telegram setting
 POLLING = os.getenv("POLLING")  # if True - polling mode, False - webhook mode

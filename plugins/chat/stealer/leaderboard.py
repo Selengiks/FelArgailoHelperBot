@@ -1,8 +1,5 @@
-import asyncio
-
-from aiogram import types
+from plugins import types, logger, asyncio
 from support.bots import dp, bot
-from loguru import logger
 from support.redis_db import db
 
 

@@ -1,10 +1,8 @@
-import asyncio
+from imports.global_imports import *
 import support.logger_conf
 import config as cfg
-from aiogram import Dispatcher, executor, types
 from aiogram.utils import exceptions
 from aiogram.utils.executor import start_webhook
-from loguru import logger
 from support import dp, bot, tbot, LoguruMiddleware
 import plugins
 from utils import handler_filters

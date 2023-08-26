@@ -1,6 +1,8 @@
+from imports.global_imports import *
+from imports.env_import import *
+from aiogram import md
+
 from utils import media_sync
-from loguru import logger
-from aiogram import md, types
 
 
 async def initialize_utils():

@@ -1,5 +1,4 @@
-import os
-from . import logger
+from . import logger, os
 
 
 async def send_media(bot, channel_id, media):

@@ -1,8 +1,9 @@
+from imports.global_imports import *
+from imports.env_import import *
 from plugins.channel import followers
 from plugins.channel.notifier import stream_notifier
 from plugins.chat.stealer import stealer, leaderboard
 from plugins.chat.unpinner import unpin
-from loguru import logger
 
 
 async def initialize_plugins():

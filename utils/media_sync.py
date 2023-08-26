@@ -1,7 +1,6 @@
-import os
-import asyncio
-from aiogram import types
-from loguru import logger
+import redis
+
+from . import os, asyncio, logger, types
 import hashlib
 from support.bots import dp
 
@@ -15,7 +14,7 @@ parent_mediafolder = "media"
 media_files = {}
 
 
-@dp.message_handler(is_admin=True, commands="media", commands_prefix="!")
+@dp.message_handler(is_superadmin=True, commands="media", commands_prefix="!")
 async def media_list(message: types.Message):
     """Return media files list to chat"""
     medialist_message = ""
@@ -27,7 +26,9 @@ async def media_list(message: types.Message):
     await message.answer(medialist_message)
 
 
-@dp.message_handler(is_admin=True, is_reply=True, commands="add", commands_prefix="!")
+@dp.message_handler(
+    is_superadmin=True, is_reply=True, commands="add", commands_prefix="!"
+)
 async def add_media(message: types.Message):
     """Add media files to bot"""
 
@@ -106,13 +107,13 @@ async def add_media(message: types.Message):
             )
 
 
-@dp.message_handler(is_admin=True, commands="edit", commands_prefix="!")
+@dp.message_handler(is_superadmin=True, commands="edit", commands_prefix="!")
 async def edit_media(message: types.Message):
     """Edit media files to bot"""
     pass
 
 
-@dp.message_handler(is_admin=True, commands="delete", commands_prefix="!")
+@dp.message_handler(is_superadmin=True, commands="delete", commands_prefix="!")
 async def delete_media(message: types.Message):
     """Delete media files from bot"""
     args = message.text.split()
@@ -156,8 +157,8 @@ async def sync_media():
                     {"Name": file, "Hash": get_file_hash(file_path), "Path": file_path}
                 )
         # Add files to Redis database
-        for folder, files in media_files.items():
-            try:
+        try:
+            for folder, files in media_files.items():
                 for file in files:
                     db.sadd(
                         f"{parent_mediafolder}:{folder}:{file['Name']}:Name",
@@ -171,8 +172,8 @@ async def sync_media():
                         f"{parent_mediafolder}:{folder}:{file['Name']}:Path",
                         file["Path"],
                     )
-            except NameError:
-                logger.warning("Redis not enabled. Data not processed!")
+        except redis.ConnectionError:
+            logger.warning("Redis not enabled. Data not processed!")
 
         logger.trace(f"Files sync result:")
         for k, v in media_files.items():

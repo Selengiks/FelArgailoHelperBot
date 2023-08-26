@@ -1,16 +1,14 @@
-import os
-from aiogram import types
+from plugins import os, types, logger
 from support.bots import dp
-from loguru import logger
-from dotenv import load_dotenv
 from utils import message_sender
 from support.redis_db import db
 
-load_dotenv()
 channel_id = os.getenv("CHANNEL")
 
 
-@dp.message_handler(is_admin=True, is_reply=True, commands="steal", commands_prefix="!")
+@dp.message_handler(
+    is_superadmin=True, is_reply=True, commands="steal", commands_prefix="!"
+)
 async def stealer(message: types.Message):
     if message.reply_to_message:
         answer = message.reply_to_message

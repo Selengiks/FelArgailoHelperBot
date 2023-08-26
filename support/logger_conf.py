@@ -1,5 +1,5 @@
 from sys import stdout
-from loguru import logger
+from . import logger
 
 
 async def start(mode: str):

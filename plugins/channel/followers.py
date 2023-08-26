@@ -1,15 +1,11 @@
-import os
-import asyncio
+from plugins import os, logger, asyncio
 import random
-from dotenv import load_dotenv
-from loguru import logger
 from support.bots import bot
 from support.telebot import tbot
 from utils.media_sender import send_media
 from utils.media_sync import media_files
 
 
-load_dotenv()
 channel_id = os.getenv("CHANNEL")
 last_media = None
 

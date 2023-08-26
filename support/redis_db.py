@@ -1,8 +1,5 @@
-import os
-from dotenv import load_dotenv
+from imports.env_import import *
 import redis
-
-load_dotenv()
 
 ENABLE_REDIS = True
 

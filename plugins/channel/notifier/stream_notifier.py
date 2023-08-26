@@ -1,9 +1,6 @@
-import os
-from dotenv import load_dotenv
-from loguru import logger
+from plugins import os, logger
 from plugins.channel.notifier import get_twich_notification, get_youtube_notification
 
-load_dotenv()
 
 twitch_integration = True
 youtube_integration = True

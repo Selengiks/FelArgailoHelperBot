@@ -1,6 +1,5 @@
-import asyncio
+from plugins import asyncio, logger
 import requests
-from loguru import logger
 
 
 async def twitch_stream_handler(client_id, access_token, channel):
