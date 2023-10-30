@@ -7,7 +7,7 @@ from plugins.chat.unpinner import unpin
 
 
 async def initialize_plugins():
-    await followers.on_startup()
+    # await followers.on_startup()
     # await stream_notifier.on_startup()
     await stealer.on_startup()
     await leaderboard.on_startup()
